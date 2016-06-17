@@ -1,0 +1,53 @@
+# $Id$
+# Maintainer: Kyle Keen <keenerd@gmail.com>
+# Contributor: Aaron Griffin <aaron@archlinux.org>
+# Contributor: juergen <juergen@archlinux.org>
+# Contributor: John Proctor <jproctor@prium.net>
+
+pkgname=ratpoison
+pkgver=1.4.8
+pkgrel=2
+pkgdesc="A simple keystroke-driven window manager"
+arch="all"
+license='GPL'
+makedepends="libx11-dev libxft-dev bash libxtst-dev perl"
+depends="libxinerama readline libxtst libxft texinfo"
+url="http://www.nongnu.org/ratpoison/"
+source="http://savannah.nongnu.org/download/${pkgname}/${pkgname}-${pkgver}.tar.xz"
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  # FS#38726, v1.4.6-2
+  sed -i 's|PRINT_ERROR (("XGetWMName|PRINT_DEBUG (("XGetWMName|' src/manage.c
+
+  ./configure --prefix=/usr
+  make CFLAGS="$CFLAGS -DHAVE_GETLINE"
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+
+  # fix permissions
+  #chmod a+x "${pkgdir}/usr/share/ratpoison/"{allwindows.sh,clickframe.pl,rpshowall.sh,rpws,split.sh}
+
+  rm -r "${pkgdir}/usr/share/doc"
+  rm -r "${pkgdir}/usr/share/emacs"
+  rm -r "${pkgdir}/usr/share/man"
+
+  # Not useful outside the source tree.
+  rm "${pkgdir}/usr/share/ratpoison/genrpbindings"
+
+  #cd contrib
+  #./genrpbindings
+  #install -dm755 "${pkgdir}/usr/share/ratpoison/bindings"
+  #install -m644 Ratpoison.pm ratpoison-cmd.el ratpoison.rb ratpoison.lisp ratpoison.py \
+  #  "${pkgdir}/usr/share/ratpoison/bindings/"
+
+  #install -Dm644 "${srcdir}/${pkgname}.desktop" \
+  #  "${pkgdir}/etc/X11/sessions/${pkgname}.desktop"
+}
+md5sums="964f07f7ec91e95767a8d60fa6bdec3d  ratpoison-1.4.8.tar.xz"
+sha256sums="da4695636d1fce8883ef2144d79ce46ebb0431a5da02440bd1ffec5dca17a0f0  ratpoison-1.4.8.tar.xz"
+sha512sums="10b44489e60d3186ca407a5bd87e23dbd737cdafee22ea7284ac4db8bb4463081af483460d1899161fbae2973f4d25fbd1bfd354e3ffb59735baf69bbd6f94f6  ratpoison-1.4.8.tar.xz"
