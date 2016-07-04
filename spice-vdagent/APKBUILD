@@ -6,7 +6,7 @@ pkgdesc="Spice agent xorg client that enables copy and paste between client and 
 arch="all"
 url="http://www.spice-space.org/"
 license='GPL'
-makedepends="spice-protocol>=0.12.8 glib-dev alsa-lib-dev libxinerama-dev libxrandr-dev libxfixes-dev linux-headers autoconf"
+makedepends="libpciaccess-dev spice-protocol>=0.12.8 glib-dev alsa-lib-dev libxinerama-dev libxrandr-dev libxfixes-dev linux-headers autoconf automake"
 depends="libpciaccess libxinerama libxrandr libxfixes alsa-lib glib"
 source="http://www.spice-space.org/download/releases/$pkgname-$pkgver.tar.bz2"
 
