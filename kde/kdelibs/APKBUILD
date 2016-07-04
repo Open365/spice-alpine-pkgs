@@ -1,0 +1,66 @@
+# $Id$
+# Adapted from ArchLinux
+# Contributor: Vishesh Handa <me@vhanda.in>
+#
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org
+# Contributor: Pierre Schmitz <pierre@archlinux.de>
+
+pkgname=kdelibs
+pkgver=4.14.21
+_kdeappver=16.04.2
+pkgrel=1
+pkgdesc="KDE Core Libraries"
+arch="i686 x86_64"
+url='https://www.kde.org/'
+license="GPL LGPL FDL"
+makedepends="attica-dev qca-dev polkit-dev phonon-dev pcre-dev"
+depends="attica qca polkit
+        shared-mime-info enchant giflib jasper 
+        docbook-xsl upower udisks2 libxcursor phonon
+        qt-webkit icu"
+# Removed strigi
+# Removed libdbusmenu-qt4
+# Remove media-player-info
+# Removed libxss
+# Removed openexr
+# Removed libutempter
+makedepends='cmake automoc4 avahi mesa-gl mesa'
+source="http://download.kde.org/stable/applications/${_kdeappver}/src/$pkgname-$pkgver.tar.xz"
+
+_build="${srcdir}/${pkgname}-${pkgver}"
+
+prepare() {
+    mkdir -p $_build/build
+}
+
+build() {
+    cd $_build/build
+    pwd
+    msg "FOOOOOOOOOOOOOOOOOOOOOOOOO"
+    cmake ../ \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DKDE4_BUILD_TESTS=OFF \
+            -DCMAKE_SKIP_RPATH=ON \
+            -DKDE_DISTRIBUTION_TEXT='Open365' \
+            -DCMAKE_INSTALL_PREFIX=/usr \
+            -DSYSCONF_INSTALL_DIR=/etc \
+            -DLOCALE_INSTALL_DIR=/usr/share/locale/kde4 \
+            -DKDE_DEFAULT_HOME='.kde' \
+            -DWITH_FAM=OFF \
+            -DWITH_SOLID_UDISKS2=ON
+    make
+}
+
+package() {
+    cd $_build
+    make DESTDIR="$pkgdir" install
+
+    # cert bundle seems to be hardcoded
+    # link it to the one from ca-certificates
+    rm -f "$pkgdir"/usr/share/apps/kssl/ca-bundle.crt
+    ln -sf /etc/ssl/certs/ca-certificates.crt "$pkgdir"/usr/share/apps/kssl/ca-bundle.crt
+}
+md5sums="f464baf72e94e80653038940a91e7d89  kdelibs-4.14.21.tar.xz"
+sha256sums="487f757168a4e57f004b2c68853a183447843425a0c310fdc2b18f3f7acb2242  kdelibs-4.14.21.tar.xz"
+sha512sums="fd1000d04520a9c382158e526f3bc9d8dd53b093317d9a394ea0afcaa9671202e44c446d034431a8705a3fc9550112bb392e30c3b5c1f56e08ecfbc613213d02  kdelibs-4.14.21.tar.xz"
